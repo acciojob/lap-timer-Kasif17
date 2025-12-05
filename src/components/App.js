@@ -13,8 +13,8 @@ function App() {
     if (!running) {
       setRunning(true);
       timerRef.current = setInterval(() => {
-        setTime((prev) => prev + 1);
-      }, 10); // 10ms = 1 centisecond
+        setTime(prev => prev + 1);
+      }, 10); // 10 ms = 1 centisecond
     }
   };
 
@@ -24,26 +24,26 @@ function App() {
     clearInterval(timerRef.current);
   };
 
-  // Record a lap
+  // Record Lap
   const recordLap = () => {
     if (running) {
-      setLaps((prev) => [...prev, time]);
+      setLaps(prev => [...prev, time]);
     }
   };
 
-  // Reset everything
+  // Reset timer + laps
   const resetTimer = () => {
     stopTimer();
     setTime(0);
     setLaps([]);
   };
 
-  // Cleanup interval on unmount → prevents memory leaks
+  // Cleanup on unmount
   useEffect(() => {
     return () => clearInterval(timerRef.current);
   }, []);
 
-  // Utility: Format time
+  // Time formatter
   const formatTime = (t) => {
     const minutes = Math.floor(t / 6000);
     const seconds = Math.floor((t % 6000) / 100);
@@ -56,29 +56,33 @@ function App() {
   };
 
   return (
-    <div className="container">
+    <div>
+      {/* Do not remove the main div */}
+      <div className="container">
+        <h1>Lap Timer</h1>
 
-      <h1>Lap Timer</h1>
+        {/* Timer Display */}
+        <div className="timer">{formatTime(time)}</div>
 
-      {/* Timer Display */}
-      <div className="timer">{formatTime(time)}</div>
+        {/* Controls */}
+        <div className="buttons">
+          <button onClick={startTimer}>Start</button>
+          <button onClick={stopTimer}>Stop</button>
+          <button onClick={recordLap}>Lap</button>
+          <button onClick={resetTimer}>Reset</button>
+        </div>
 
-      {/* Controls */}
-      <div className="buttons">
-        <button onClick={startTimer}>Start</button>
-        <button onClick={stopTimer}>Stop</button>
-        <button onClick={recordLap}>Lap</button>
-        <button onClick={resetTimer}>Reset</button>
-      </div>
-
-      {/* Laps List */}
-      <div className="laps">
-        <h2>Laps</h2>
-        <ul>
-          {laps.map((lap, index) => (
-            <li key={index}>Lap {index + 1}: {formatTime(lap)}</li>
-          ))}
-        </ul>
+        {/* Laps List */}
+        <div className="laps">
+          <h2>Laps</h2>
+          <ul>
+            {laps.map((lap, index) => (
+              <li key={index}>
+                Lap {index + 1}: {formatTime(lap)}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );
