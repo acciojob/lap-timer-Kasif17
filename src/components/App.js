@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import  { useState, useEffect, useRef } from "react";
 import "../styles/App.css";
 
 function App() {
-  const [time, setTime] = useState(0);      // time in centiseconds
+  const [time, setTime] = useState(0);      
   const [running, setRunning] = useState(false);
   const [laps, setLaps] = useState([]);
 
@@ -13,8 +13,8 @@ function App() {
     if (!running) {
       setRunning(true);
       timerRef.current = setInterval(() => {
-        setTime(prev => prev + 1);
-      }, 10); // 10 ms = 1 centisecond
+        setTime((prev) => prev + 1);
+      }, 10); // 10ms = 1 centisecond
     }
   };
 
@@ -24,26 +24,26 @@ function App() {
     clearInterval(timerRef.current);
   };
 
-  // Record Lap
+  // Record a lap
   const recordLap = () => {
     if (running) {
-      setLaps(prev => [...prev, time]);
+      setLaps((prev) => [...prev, time]);
     }
   };
 
-  // Reset timer + laps
+  // Reset everything
   const resetTimer = () => {
     stopTimer();
     setTime(0);
     setLaps([]);
   };
 
-  // Cleanup on unmount
+  // Cleanup interval on unmount → prevents memory leaks
   useEffect(() => {
     return () => clearInterval(timerRef.current);
   }, []);
 
-  // Time formatter
+  // Utility: Format time
   const formatTime = (t) => {
     const minutes = Math.floor(t / 6000);
     const seconds = Math.floor((t % 6000) / 100);
@@ -56,33 +56,29 @@ function App() {
   };
 
   return (
-    <div>
-      {/* Do not remove the main div */}
-      <div className="container">
-        <h1>Lap Timer</h1>
+    <div className="container">
 
-        {/* Timer Display */}
-        <div className="timer">{formatTime(time)}</div>
+      <h1>Lap Timer</h1>
 
-        {/* Controls */}
-        <div className="buttons">
-          <button onClick={startTimer}>Start</button>
-          <button onClick={stopTimer}>Stop</button>
-          <button onClick={recordLap}>Lap</button>
-          <button onClick={resetTimer}>Reset</button>
-        </div>
+      {/* Timer Display */}
+      <div className="timer">{formatTime(time)}</div>
 
-        {/* Laps List */}
-        <div className="laps">
-          <h2>Laps</h2>
-          <ul>
-            {laps.map((lap, index) => (
-              <li key={index}>
-                Lap {index + 1}: {formatTime(lap)}
-              </li>
-            ))}
-          </ul>
-        </div>
+      {/* Controls */}
+      <div className="buttons">
+        <button onClick={startTimer}>Start</button>
+        <button onClick={stopTimer}>Stop</button>
+        <button onClick={recordLap}>Lap</button>
+        <button onClick={resetTimer}>Reset</button>
+      </div>
+
+      {/* Laps List */}
+      <div className="laps">
+        <h2>Laps</h2>
+        <ul>
+          {laps.map((lap, index) => (
+            <li key={index}>Lap {index + 1}: {formatTime(lap)}</li>
+          ))}
+        </ul>
       </div>
     </div>
   );
